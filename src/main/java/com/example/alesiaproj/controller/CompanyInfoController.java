@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,5 +59,9 @@ public class CompanyInfoController {
     @GetMapping
     public ResponseEntity<List<CompanyInfo>> getAll() {
         return ResponseEntity.ok(companyInfoService.getAll());
+    }
+    @GetMapping("/getByAdminEmail/{adminEmail}")
+    public ResponseEntity<List<CompanyInfo>> getAllByAdminEmail(String email){
+        return ResponseEntity.ok(companyInfoService.getAll().stream().filter(x->x.getAdminEmail().equals(email)).collect(Collectors.toList()));
     }
 }

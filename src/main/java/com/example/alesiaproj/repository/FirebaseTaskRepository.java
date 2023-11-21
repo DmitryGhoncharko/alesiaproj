@@ -14,12 +14,15 @@ import java.util.concurrent.ExecutionException;
 
 @Component
 public class FirebaseTaskRepository {
-    public String create(Task task) throws ExecutionException, InterruptedException {
+    public void create(Task task) throws ExecutionException, InterruptedException {
         Firestore firestore = FirestoreClient.getFirestore();
-        DocumentReference docRef = firestore.collection("task").document();
-        task.setId(docRef.getId());
-        ApiFuture<WriteResult> collection = docRef.set(task);
-        return collection.get().getUpdateTime().toString();
+
+        // Получите ссылку на коллекцию "task" и создайте документ с явно указанным ID
+        DocumentReference docRef = firestore.collection("task").document(task.getId());
+
+        // Асинхронное добавление документа с использованием ApiFuture
+        ApiFuture<WriteResult> result = docRef.set(task);
+        result.get();
     }
 
     public Optional<Task> getById(String documentId) throws ExecutionException, InterruptedException {
